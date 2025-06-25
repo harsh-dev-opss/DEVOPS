@@ -228,4 +228,4 @@ sudo systemctl start docker
 - **Modular Configuration**: Separate `nginx.conf`, Dockerfiles, and `docker-compose.yml`.
 - **Test Script**: Simplified with `curl` and `grep`, featuring colored output.
 - **Robust Setup**: Handles JSON key ordering, 301 redirects, and service dependencies.
-```]()
+  
