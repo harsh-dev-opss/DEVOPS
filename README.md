@@ -1,96 +1,113 @@
 # Docker Compose Assignment
 
-This project implements a Docker Compose-based application consisting of three services: an Nginx reverse proxy, a Go-based `service_1`, and a Python Flask-based `service_2`. The services are orchestrated using Docker Compose, with health checks to ensure reliability and a test script to validate functionality. The Nginx proxy routes requests to the appropriate services, and the setup includes logging and modular configuration for scalability.
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+
+This project is a **Docker Compose-based application** designed to demonstrate container orchestration with three services: an **Nginx reverse proxy**, a **Go-based Service 1**, and a **Python Flask-based Service 2**. The services are managed using Docker Compose, featuring health checks for reliability, a test script for validation, and logging for monitoring. The Nginx proxy routes requests to the appropriate services, ensuring a scalable and modular setup.
 
 ## Table of Contents
-- [Project Overview](#project-overview)
+- [Overview](#overview)
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
-- [Services](#services)
+- [Services and Endpoints](#services-and-endpoints)
 - [Setup Instructions](#setup-instructions)
-- [Testing](#testing)
+- [Testing the Application](#testing-the-application)
 - [Troubleshooting](#troubleshooting)
 - [Submission](#submission)
 - [Bonus Features](#bonus-features)
 
-## Project Overview
-The application consists of:
-- **Nginx**: Acts as a reverse proxy, routing requests to `service_1` and `service_2`. Exposed on port `8080`.
-- **Service_1**: A Go-based service listening on port `8001`, providing `/ping` and `/hello` endpoints.
-- **Service_2**: A Python Flask-based service listening on port `8002`, providing `/ping` and `/hello` endpoints.
-- **Docker Compose**: Orchestrates the services with health checks and a bridge network (`app-network`).
-- **Test Script**: A Bash script (`test.sh`) validates the health of Nginx and the functionality of service endpoints.
+## Overview
+The application orchestrates three services using **Docker Compose**:
+- **Nginx**: Routes incoming requests to `service_1` or `service_2` and exposes a health check endpoint. Runs on port `8080`.
+- **Service_1**: A lightweight Go API providing `/ping` and `/hello` endpoints, listening on port `8001` (internal).
+- **Service_2**: A Python Flask API providing `/ping` and `/hello` endpoints, listening on port `8002` (internal).
 
-### Endpoints
-- `http://localhost:8080/health`: Returns `"Nginx is running"` (plain text).
-- `http://localhost:8080/service1/ping`: Returns `{"status":"ok","service":"1"}` (JSON).
-- `http://localhost:8080/service1/hello`: Returns `{"message":"Hello from Service 1"}` (JSON).
-- `http://localhost:8080/service2/ping`: Returns `{"status":"ok","service":"2"}` (JSON).
-- `http://localhost:8080/service2/hello`: Returns `{"message":"Hello from Service 2"}` (JSON).
+The services communicate over a bridge network (`app-network`), with health checks ensuring reliability. A Bash script (`test.sh`) validates all endpoints, and logging is configured for debugging.
 
 ## Prerequisites
+To run this project, ensure you have the following installed:
 - **Docker**: Version 20.10 or higher.
-- **Docker Compose**: Version 1.29.2 or higher (recommend upgrading to v2.x).
+- **Docker Compose**: Version 1.29.2 or higher (v2.x recommended).
 - **Git**: For cloning the repository.
-- **Bash**: For running the test script.
+- **Bash**: For running `test.sh`.
 - **Operating System**: Linux (Ubuntu recommended), macOS, or Windows with WSL2.
 
-To check versions:
+Verify installations:
 ```bash
 docker --version
 docker-compose --version
 git --version
-```
+
+Install Prerequisites (Ubuntu):
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose git
+sudo systemctl enable docker
+sudo systemctl start docker
+
 Project Structure
 .
-├── docker-compose.yml       # Docker Compose configuration
-├── nginx
-│   ├── nginx.conf          # Nginx configuration
-│   └── Dockerfile          # Nginx Dockerfile
-├── service_1
-│   ├── Dockerfile          # Service_1 Dockerfile
-│   ├── main.go             # Go application source
+├── docker-compose.yml       # Configures Docker Compose services and network
+├── nginx/
+│   ├── nginx.conf          # Nginx reverse proxy configuration
+│   └── Dockerfile          # Builds Nginx with curl for health checks
+├── service_1/
+│   ├── Dockerfile          # Builds Go-based Service 1 with curl
+│   ├── main.go             # Go application source code
 │   ├── go.mod              # Go module dependencies
-│   └── README.md           # Service_1 documentation
-├── service_2
-│   ├── Dockerfile          # Service_2 Dockerfile
-│   ├── app.py              # Flask application source
-│   └── README.md           # Service_2 documentation
-├── README.md               # Project documentation
-└── test.sh                 # Test script for endpoint validation
+│   └── README.md           # Service-specific documentation
+├── service_2/
+│   ├── Dockerfile          # Builds Flask-based Service 2 with curl
+│   ├── app.py              # Flask application source code
+│   └── README.md           # Service-specific documentation
+├── test.sh                 # Bash script to test all endpoints
+└── README.md               # Project documentation (this file)
 
-Services
+Services and Endpoints
+
+
+
+Service
+Port (Internal)
+Endpoint
+Response (Content-Type)
+
+
+
 Nginx
+8080
+/health
+Nginx is running (text/plain)
 
-Role: Reverse proxy.
-Port: 8080 (host) → 8080 (container).
-Health Check: Runs nginx -t to validate configuration.
-Configuration: Defined in nginx/nginx.conf with upstream blocks for service_1 and service_2.
-Dependencies: Waits for service_1 and service_2 to be healthy.
 
 Service_1
-
-Role: Go-based API.
-Port: 8001 (internal).
-Endpoints:
-/ping: Returns {"status":"ok","service":"1"}.
-/hello: Returns {"message":"Hello from Service 1"}.
+8001
+/service1/ping
+{"status":"ok","service":"1"} (application/json)
 
 
-Health Check: Uses curl -f http://localhost:8001/ping.
-Dockerfile: Based on golang:1.22-alpine, includes curl for health checks.
+
+
+/service1/hello
+{"message":"Hello from Service 1"} (application/json)
+
 
 Service_2
-
-Role: Python Flask-based API.
-Port: 8002 (internal).
-Endpoints:
-/ping: Returns {"status":"ok","service":"2"}.
-/hello: Returns {"message":"Hello from Service 2"}.
+8002
+/service2/ping
+{"status":"ok","service":"2"} (application/json)
 
 
-Health Check: Uses curl -f http://localhost:8002/ping.
-Dockerfile: Based on python:3.9-slim, includes curl and Flask.
+
+
+/service2/hello
+{"message":"Hello from Service 2"} (application/json)
+
+
+
+Nginx: Routes requests to /service1/* and /service2/*, with health check via nginx -t.
+Service_1: Go-based API with health check using curl -f http://localhost:8001/ping.
+Service_2: Flask-based API with health check using curl -f http://localhost:8002/ping.
 
 Setup Instructions
 
@@ -99,45 +116,45 @@ git clone <repository-url>
 cd Assignment
 
 
-Verify Files:Ensure the project structure matches the one above.
+Verify Project Structure:Ensure all files match the structure above.
 
-Clean Up Existing Containers:
+Clean Up Existing Containers:Remove old containers and images to avoid conflicts:
 docker-compose down
 docker rm -f $(docker ps -aq)
 docker rmi -f $(docker images -q 'assignment_*')
 docker system prune -f
 
 
-Start Services:Run in detached mode to keep services in the background:
+Start Services:Build and run services in the background:
 docker-compose up -d --build
 
 
-Check Service Status:Verify all services are running and healthy:
+Verify Service Status:Check that all services are running and healthy:
 docker-compose ps
 
-Expected output:
+Expected Output:
 Name                    State               Health
 assignment_nginx_1      Up                  healthy
 assignment_service_1_1   Up                  healthy
 assignment_service_2_1   Up                  healthy
 
 
-View Logs (if needed):
+View Logs (Optional):Inspect logs for debugging:
 docker-compose logs
 
 
-Stop Services:
+Stop Services:Stop and remove containers when done:
 docker-compose down
 
 
 
-Testing
+Testing the Application
 
-Run Test Script:The test.sh script validates all endpoints:
+Run Automated Tests:The test.sh script validates all endpoints with colored output:
 chmod +x test.sh
 ./test.sh
 
-Expected output:
+Expected Output:
 Starting API Tests...
 
 ==============================
@@ -162,7 +179,7 @@ All Tests Passed Successfully!
 ==============================
 
 
-Manual Testing:Test endpoints directly:
+Manual Testing:Test endpoints directly to verify responses:
 curl http://localhost:8080/health
 curl http://localhost:8080/service1/ping
 curl http://localhost:8080/service1/hello
@@ -176,7 +193,7 @@ Troubleshooting
 Unhealthy Services:
 
 Check logs: docker-compose logs <service_name>.
-Verify curl is installed:docker exec -it assignment_service_1_1 sh -c "curl --version"
+Verify curl installation:docker exec -it assignment_service_1_1 sh -c "curl --version"
 docker exec -it assignment_service_2_1 bash -c "curl --version"
 
 
@@ -188,46 +205,48 @@ docker exec -it assignment_service_2_1 bash -c "curl -f http://localhost:8002/pi
 
 Nginx Fails to Start:
 
-Check configuration: docker run --rm -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf:ro nginx:latest nginx -t.
-Verify service_1 and service_2 are healthy (docker-compose ps).
+Validate configuration:docker run --rm -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf:ro nginx:latest nginx -t
+
+
+Ensure service_1 and service_2 are healthy: docker-compose ps.
 
 
 Test Script Fails:
 
-Ensure services are running: docker-compose ps.
-Check endpoint responses manually with curl.
-Verify nginx.conf routes correctly.
+Verify services are running: docker-compose ps.
+Test endpoints manually with curl.
+Check nginx.conf for correct routing.
 
 
-Docker Compose Version:If issues persist, upgrade Docker Compose:
+Docker Compose Version:If issues persist, upgrade to v2.x:
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
 
-Additional Files:Check the Google Drive folder for missing files (e.g., requirements.txt for service_2).
+Missing Files:Check the Google Drive folder for additional files (e.g., requirements.txt for service_2).
 
 
 Submission
 
 Commit Changes:
 git add .
-git commit -m "Complete Docker Compose assignment with Nginx, Service_1, Service_2, and test script"
+git commit -m "Complete Docker Compose assignment with enhanced README"
 git push origin main
 
 
 Submit Repository:
 
-Submit the repository URL via the Google Form: https://forms.gle/6LmZR5b2HsfDJLXS6
-Ensure the repository is accessible (public or shared with the instructor).
+Submit the repository URL via the Google Form: https://forms.gle/6LmZR5b2HsfDJLXS6.
+Ensure the repository is public or shared with the instructor.
 
 
 
 Bonus Features
 
-Health Checks: Implemented for all services (nginx -t, curl -f for services).
-Logging: Configured with JSON driver, 10MB max size, and 3 file rotations.
-Modular Configuration: Separate nginx.conf, Dockerfiles, and docker-compose.yml for scalability.
-Test Script: Enhanced with colored output and clear pass/fail indicators.
+Health Checks: Implemented for all services (nginx -t for Nginx, curl -f for services).
+Logging: JSON driver with 10MB max size and 3 file rotations.
+Modular Configuration: Separate nginx.conf, Dockerfiles, and docker-compose.yml.
+Test Script: Simplified with curl and grep, featuring colored output.
 Robust Setup: Handles JSON key ordering, 301 redirects, and service dependencies.
 
 
