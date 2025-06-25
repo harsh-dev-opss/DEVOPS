@@ -40,7 +40,7 @@ To check versions:
 docker --version
 docker-compose --version
 git --version
-
+```
 Project Structure
 .
 ├── docker-compose.yml       # Docker Compose configuration
