@@ -69,17 +69,18 @@ sudo systemctl start docker
 ```
 
 ## Services and Endpoints
-| Service     | Port (Internal) | Endpoint              | Response (Content-Type)                     |
-|-------------|-----------------|-----------------------|---------------------------------------------|
-| **Nginx**   | 8080            | `/health`             | `Nginx is running` (text/plain)             |
-| **Service_1** | 8001          | `/service1/ping`      | `{"status":"ok","service":"1"}` (application/json) |
-|             |                 | `/service1/hello`     | `{"message":"Hello from Service 1"}` (application/json) |
-| **Service_2** | 8002          | `/service2/ping`      | `{"status":"ok","service":"2"}` (application/json) |
-|             |                 | `/service2/hello`     | `{"message":"Hello from Service 2"}` (application/json) |
+| Service     | Port (Internal) | Endpoint              | Response (Content-Type)                     | Live URL                                                                 |
+|-------------|-----------------|-----------------------|---------------------------------------------|--------------------------------------------------------------------------|
+| **Nginx**   | 8080            | `/health`             | `Nginx is running` (text/plain)             | [http://147.79.68.124:8080/health](http://147.79.68.124:8080/health)     |
+| **Service_1** | 8001          | `/service1/ping`      | `{"status":"ok","service":"1"}` (application/json) | [http://147.79.68.124:8080/service1/ping](http://147.79.68.124:8080/service1/ping) |
+|             |                 | `/service1/hello`     | `{"message":"Hello from Service 1"}` (application/json) | [http://147.79.68.124:8080/service1/hello](http://147.79.68.124:8080/service1/hello) |
+| **Service_2** | 8002          | `/service2/ping`      | `{"status":"ok","service":"2"}` (application/json) | [http://147.79.68.124:8080/service2/ping](http://147.79.68.124:8080/service2/ping) |
+|             |                 | `/service2/hello`     | `{"message":"Hello from Service 2"}` (application/json) | [http://147.79.68.124:8080/service2/hello](http://147.79.68.124:8080/service2/hello) |
 
 - **Nginx**: Routes requests to `/service1/*` and `/service2/*`, with health check via `nginx -t`.
 - **Service_1**: Go-based API with health check using `curl -f http://localhost:8001/ping`.
 - **Service_2**: Flask-based API with health check using `curl -f http://localhost:8002/ping`.
+- **Live URLs**: The above endpoints are accessible on `147.79.68.124:8080` for testing (ensure the server is running).
 
 ## Setup Instructions
 1. **Clone the Repository**:
@@ -173,6 +174,14 @@ sudo systemctl start docker
    curl http://localhost:8080/service2/ping
    curl http://localhost:8080/service2/hello
    ```
+   Alternatively, test live URLs:
+   ```bash
+   curl http://147.79.68.124:8080/health
+   curl http://147.79.68.124:8080/service1/ping
+   curl http://147.79.68.124:8080/service1/hello
+   curl http://147.79.68.124:8080/service2/ping
+   curl http://147.79.68.124:8080/service2/hello
+   ```
 
 ## Troubleshooting
 - **Unhealthy Services**:
@@ -207,13 +216,20 @@ sudo systemctl start docker
   sudo chmod +x /usr/local/bin/docker-compose
   ```
 
+- **Missing Files**:
+  Check the Google Drive folder for additional files (e.g., `requirements.txt` for `service_2`).
+
 ## Submission
- **Commit Changes**:
+1. **Commit Changes**:
    ```bash
    git add .
-   git commit -m "Complete Docker Compose assignment with enhanced README"
+   git commit -m "Complete Docker Compose assignment with live URLs in README"
    git push origin main
    ```
+
+2. **Submit Repository**:
+   - Submit the repository URL via the Google Form: [https://forms.gle/6LmZR5b2HsfDJLXS6](https://forms.gle/6LmZR5b2HsfDJLXS6).
+   - Ensure the repository is **public** or shared with the instructor.
 
 ## Bonus Features
 - **Health Checks**: Implemented for all services (`nginx -t` for Nginx, `curl -f` for services).
