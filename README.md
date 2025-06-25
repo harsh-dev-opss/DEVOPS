@@ -207,20 +207,13 @@ sudo systemctl start docker
   sudo chmod +x /usr/local/bin/docker-compose
   ```
 
-- **Missing Files**:
-  Check the Google Drive folder for additional files (e.g., `requirements.txt` for `service_2`).
-
 ## Submission
-1. **Commit Changes**:
+ **Commit Changes**:
    ```bash
    git add .
    git commit -m "Complete Docker Compose assignment with enhanced README"
    git push origin main
    ```
-
-2. **Submit Repository**:
-   - Submit the repository URL via the Google Form: [https://forms.gle/6LmZR5b2HsfDJLXS6](https://forms.gle/6LmZR5b2HsfDJLXS6).
-   - Ensure the repository is **public** or shared with the instructor.
 
 ## Bonus Features
 - **Health Checks**: Implemented for all services (`nginx -t` for Nginx, `curl -f` for services).
